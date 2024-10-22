@@ -57,6 +57,7 @@ public class UserServiceImplement implements UserService {
                 reqMap.containsKey("email") && reqMap.containsKey("password")){
              return true;
          }
+
          return false;
     }
 
