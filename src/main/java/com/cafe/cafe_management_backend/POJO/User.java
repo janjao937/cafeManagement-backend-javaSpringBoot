@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @NamedQuery(name="User.findByEmailId",query = "SELECT u FROM User u WHERE u.email=:email")
 
-@Data
+@Data//auto create get set prop
 @Entity
 @DynamicUpdate
 @DynamicInsert
