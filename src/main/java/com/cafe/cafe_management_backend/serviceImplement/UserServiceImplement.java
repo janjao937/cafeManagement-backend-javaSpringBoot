@@ -76,15 +76,12 @@ public class UserServiceImplement implements UserService {
 
          return false;
     }
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 
 
     private User getUserFromMap(Map<String,String> reqMap){
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String hashPassword = passwordEncoder().encode(reqMap.get("password"));
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashPassword = passwordEncoder.encode(reqMap.get("password"));
         //passwordEncoder.matches("hashPass","passInDb");//verify Password
 
         User user = new User();
@@ -104,12 +101,13 @@ public class UserServiceImplement implements UserService {
     public ResponseEntity<String> login(Map<String, String> req) {
         log.info("Inside login");
         try {
-            Authentication auth =authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(req.get("email"),req.get("password")));
+//            Authentication auth =authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(req.get("email"),req.get("password")));
             UserDetails userDetails = customerUsersDetailsService.loadUserByUsername(req.get("email"));
 
-            if(auth.isAuthenticated()){
-//                if ( passwordEncoder().matches(req.get("password"), userDetails.getPassword())){
+//            if(auth.isAuthenticated()){
+                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                if ( passwordEncoder.matches(req.get("password"), userDetails.getPassword())){
 
                 if(customerUsersDetailsService.getUserDetail().getStatus().equalsIgnoreCase("true")){
                     return new ResponseEntity<String>("{\"token\":\""+jwtUtil.generateToken(
