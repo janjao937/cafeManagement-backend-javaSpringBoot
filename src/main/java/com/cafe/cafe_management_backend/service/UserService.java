@@ -7,4 +7,5 @@ import java.util.Map;
 public interface UserService {
 
     public ResponseEntity<String> signUp(Map<String, String> req);
+    public ResponseEntity<String> login(Map<String,String> req);
 }

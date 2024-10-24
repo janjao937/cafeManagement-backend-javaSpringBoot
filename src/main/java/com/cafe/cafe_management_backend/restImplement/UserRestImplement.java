@@ -28,4 +28,13 @@ public class UserRestImplement implements UserRest {
     }
 
 
+    @Override
+    public ResponseEntity<String> login(Map<String, String> requsetMap) {
+        try {
+            return userService.login(requsetMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

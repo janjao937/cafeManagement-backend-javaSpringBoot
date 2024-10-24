@@ -1,5 +1,7 @@
 package com.cafe.cafe_management_backend.serviceImplement;
 
+import com.cafe.cafe_management_backend.JWT.CustomerUsersDetailsService;
+import com.cafe.cafe_management_backend.JWT.JwtUtil;
 import com.cafe.cafe_management_backend.POJO.User;
 import com.cafe.cafe_management_backend.constants.CafeConstants;
 import com.cafe.cafe_management_backend.dao.UserDao;
@@ -9,8 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +32,15 @@ public class UserServiceImplement implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private CustomerUsersDetailsService customerUsersDetailsService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     @Override
@@ -60,10 +76,15 @@ public class UserServiceImplement implements UserService {
 
          return false;
     }
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 
     private User getUserFromMap(Map<String,String> reqMap){
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String hashPassword = passwordEncoder.encode(reqMap.get("password"));
+//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashPassword = passwordEncoder().encode(reqMap.get("password"));
         //passwordEncoder.matches("hashPass","passInDb");//verify Password
 
         User user = new User();
@@ -77,5 +98,31 @@ public class UserServiceImplement implements UserService {
         user.setRole("user");
 
         return user;
+    }
+
+    @Override
+    public ResponseEntity<String> login(Map<String, String> req) {
+        log.info("Inside login");
+        try {
+            Authentication auth =authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(req.get("email"),req.get("password")));
+            UserDetails userDetails = customerUsersDetailsService.loadUserByUsername(req.get("email"));
+
+            if(auth.isAuthenticated()){
+//                if ( passwordEncoder().matches(req.get("password"), userDetails.getPassword())){
+
+                if(customerUsersDetailsService.getUserDetail().getStatus().equalsIgnoreCase("true")){
+                    return new ResponseEntity<String>("{\"token\":\""+jwtUtil.generateToken(
+                            customerUsersDetailsService.getUserDetail().getEmail()
+                            ,customerUsersDetailsService.getUserDetail().getRole())+"\"}",HttpStatus.OK);
+                }else {
+                    return new ResponseEntity<String>("{\"message\":\""+"Wait for admin approval"+"\"}",HttpStatus.BAD_REQUEST);
+                }
+            }
+        } catch (Exception e) {
+            log.error("{}",e);
+        }
+
+        return new ResponseEntity<String>("{\"message\":\""+"Bad credentials"+"\"}",HttpStatus.BAD_REQUEST);
     }
 }
