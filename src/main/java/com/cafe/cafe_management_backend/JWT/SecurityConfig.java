@@ -39,7 +39,7 @@ public class SecurityConfig {
         http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
                 .and().csrf().disable().authorizeHttpRequests()
                 .requestMatchers("/user/login","/user/forgotPassword","/user/signup").permitAll()
-                .and().authorizeHttpRequests().requestMatchers("/**").authenticated().and().exceptionHandling()
+                .and().authorizeHttpRequests().requestMatchers("/**").authenticated()
                 .and().exceptionHandling()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authenticationProvider(authenticationProvider())

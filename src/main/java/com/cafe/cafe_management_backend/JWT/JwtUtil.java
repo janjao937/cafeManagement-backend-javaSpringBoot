@@ -16,7 +16,7 @@ import java.util.function.Function;
 @Service
 public class JwtUtil {
 
-    private String secret ="qwe23efgw3r23r";
+    private String secret ="abcdefg";
 
 
     private Boolean isTokenExpired(String token){
