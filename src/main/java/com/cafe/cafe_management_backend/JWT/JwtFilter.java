@@ -49,10 +49,10 @@ public class JwtFilter extends OncePerRequestFilter {
         if(email!= null && SecurityContextHolder.getContext().getAuthentication()==null){
             UserDetails customerDetail = customerUsersDetailsService.loadUserByUsername(email);
 
-            System.out.println("In doFillter"+jwtService.validateToken(token,customerDetail));//check have some bug becase this false
-            System.out.println("In doFillter"+token);
-
-            //Have some bug after this line
+//            System.out.println("In doFillter"+jwtService.validateToken(token,customerDetail));//check have some bug becase this false
+//            System.out.println("In doFillter  "+ claims);
+//            System.out.println( "user detail "+customerDetail);
+            //Fixed
             if(jwtService.validateToken(token,customerDetail)){
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(customerDetail,null,

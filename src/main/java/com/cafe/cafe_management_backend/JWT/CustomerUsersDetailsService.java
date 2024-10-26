@@ -26,7 +26,9 @@ public class CustomerUsersDetailsService implements UserDetailsService {
         log.info("Inside loadUserByUserName {}",email);
         userDetail = userDao.findByEmailId(email);
         if(!Objects.isNull(userDetail)){
-            return new User(userDetail.getName(),userDetail.getPassword(),new ArrayList<>());
+            //            return new User(userDetail.getName(),userDetail.getPassword(),new ArrayList<>());
+            return new User(userDetail.getEmail(),userDetail.getPassword(),new ArrayList<>());
+
         }else {
             throw new UsernameNotFoundException("== User not found ==");
         }

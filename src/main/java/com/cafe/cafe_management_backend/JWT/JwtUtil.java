@@ -50,8 +50,13 @@ public class JwtUtil {
     public Claims extractAllClaims(String token){
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
+
+    //may be bug is here
     public Boolean validateToken(String token, UserDetails userDetails){
         final String username = extractUsername(token);
+//        System.out.println("validateToken token username: "+username);
+//        System.out.println("  userdetail userName"+userDetails.getUsername());//why?not email
+
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
