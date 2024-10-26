@@ -135,7 +135,7 @@ public class UserServiceImplement implements UserService {
         log.info("Inside getAllUser");
         try{
             if(jwtFilter.isAdmin()){
-
+                return new ResponseEntity<>(userDao.getAllUser(),HttpStatus.OK);
             }
             else {
                 return new ResponseEntity<>(new ArrayList<>(),HttpStatus.UNAUTHORIZED);
