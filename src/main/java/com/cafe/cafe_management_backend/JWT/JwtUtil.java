@@ -16,7 +16,7 @@ import java.util.function.Function;
 @Service
 public class JwtUtil {
 
-    private String secret ="abcdefg";
+    private static final String secret ="abcdasdasdwqdqfefg";
 
 
     private Boolean isTokenExpired(String token){
@@ -54,5 +54,10 @@ public class JwtUtil {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
+//    private Key getSignKey(){
+//        byte[] keyBytes = Decoders.BASE64.decode(secret);
+//        return Keys.hmacShaKeyFor(keyBytes);
+//    }
 
 }

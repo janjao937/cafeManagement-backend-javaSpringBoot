@@ -48,13 +48,18 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         if(email!= null && SecurityContextHolder.getContext().getAuthentication()==null){
             UserDetails customerDetail = customerUsersDetailsService.loadUserByUsername(email);
+
+            System.out.println("In doFillter"+jwtService.validateToken(token,customerDetail));//check have some bug becase this false
+            System.out.println("In doFillter"+token);
+
+            //Have some bug after this line
             if(jwtService.validateToken(token,customerDetail)){
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(customerDetail,null,
                         customerDetail.getAuthorities());
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-
             }
         }
         filterChain.doFilter(request,response);
@@ -64,10 +69,10 @@ public class JwtFilter extends OncePerRequestFilter {
 //        return email;
 //    }
 
-    public Boolean isAdmin(){
+    public boolean isAdmin(){
         return "admin".equalsIgnoreCase((String) claims.get("role"));
     }
-    public Boolean isUser(){
+    public boolean isUser(){
         return "user".equalsIgnoreCase((String) claims.get("role"));
     }
     public String getCurrentUser(){

@@ -1,12 +1,14 @@
 package com.cafe.cafe_management_backend.serviceImplement;
 
 import com.cafe.cafe_management_backend.JWT.CustomerUsersDetailsService;
+import com.cafe.cafe_management_backend.JWT.JwtFilter;
 import com.cafe.cafe_management_backend.JWT.JwtUtil;
 import com.cafe.cafe_management_backend.POJO.User;
 import com.cafe.cafe_management_backend.constants.CafeConstants;
 import com.cafe.cafe_management_backend.dao.UserDao;
 import com.cafe.cafe_management_backend.service.UserService;
 import com.cafe.cafe_management_backend.utils.CafeUtils;
+import com.cafe.cafe_management_backend.wrapper.UserWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -41,6 +45,8 @@ public class UserServiceImplement implements UserService {
 
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private JwtFilter jwtFilter;
 
 
     @Override
@@ -122,5 +128,23 @@ public class UserServiceImplement implements UserService {
         }
 
         return new ResponseEntity<String>("{\"message\":\""+"Bad credentials"+"\"}",HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public ResponseEntity<List<UserWrapper>> getAllUser() {
+        log.info("Inside getAllUser");
+        try{
+            if(jwtFilter.isAdmin()){
+
+            }
+            else {
+                return new ResponseEntity<>(new ArrayList<>(),HttpStatus.UNAUTHORIZED);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -7,7 +7,10 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import java.io.Serializable;
 
+
+//SQL Query
 @NamedQuery(name="User.findByEmailId",query = "SELECT u FROM User u WHERE u.email=:email")
+@NamedQuery(name="User.getAllUser",query = "SELECT new com.cafe.cafe_management_backend.wrapper.UserWrapper(u.id,u.name,u.email,u.contactNumber,u.status) from User u where u.role='user'")
 
 @Data//auto create get set prop
 @Entity
