@@ -11,7 +11,7 @@ import java.io.Serializable;
 //SQL Query
 @NamedQuery(name="User.findByEmailId",query = "SELECT u FROM User u WHERE u.email=:email")
 @NamedQuery(name="User.getAllUser",query = "SELECT new com.cafe.cafe_management_backend.wrapper.UserWrapper(u.id,u.name,u.email,u.contactNumber,u.status) from User u where u.role='user'")
-
+@NamedQuery(name="User.updateStatus",query = "UPDATE User u SET u.status=:status WHERE u.id=:id")
 @Data//auto create get set prop
 @Entity
 @DynamicUpdate

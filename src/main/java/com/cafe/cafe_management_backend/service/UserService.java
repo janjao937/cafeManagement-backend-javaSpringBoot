@@ -11,4 +11,5 @@ public interface UserService {
     public ResponseEntity<String> signUp(Map<String, String> req);
     public ResponseEntity<String> login(Map<String,String> req);
     public ResponseEntity<List<UserWrapper>> getAllUser();
+    public ResponseEntity<String> update(Map<String,String> requestMap);
 }

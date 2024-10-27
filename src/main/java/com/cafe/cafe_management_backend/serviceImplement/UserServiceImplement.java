@@ -23,10 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -146,5 +143,28 @@ public class UserServiceImplement implements UserService {
             e.printStackTrace();
         }
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> update(Map<String, String> requestMap) {
+        try {
+            if(jwtFilter.isAdmin())
+            {
+                Optional<User> optional=userDao.findById(Integer.parseInt(requestMap.get("id")));
+                if(!optional.isEmpty()){
+                    userDao.updateStatus(requestMap.get("status"),Integer.parseInt(requestMap.get("id")));
+                    return CafeUtils.getResponseEntity("User Status Updated Successfully",HttpStatus.OK);
+                }else {
+                    return CafeUtils.getResponseEntity("User id doesn't not exit",HttpStatus.OK);
+                }
+            }
+            else {
+                return CafeUtils.getResponseEntity(CafeConstants.UNAUTHORIZED_ACCESS,HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
